@@ -1,9 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiGatewayController;
-
-
+use Illuminate\Support\Facades\Route;
 
 Route::post('/v1/slots/add', [ApiGatewayController::class, 'addSlot']);
 Route::get('/v1/slots/free/{id}', [ApiGatewayController::class, 'getFreeSlots']);

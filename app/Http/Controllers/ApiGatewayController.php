@@ -1,29 +1,30 @@
 <?php
+
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
-use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
-
 
 class ApiGatewayController extends Controller
 {
-
     private const ERROR_CODES = [
         'VALIDATION_FAILED' => 'validation_failed',
         'DOCTOR_ID_REQUIRED' => 'doctor_id_required',
         'SERVICE_UNAVAILABLE' => 'service_unavailable',
     ];
+
     private $slotsServiceUrl;
+
     private $patientsServiceUrl;
+
     private $httpClient;
 
     public function __construct()
     {
+        // @phpstan-ignore-next-line
         $this->slotsServiceUrl = env('APPOINTMENT_SERVICE_URL', 'http://localhost:1234');
+        // @phpstan-ignore-next-line
         $this->patientsServiceUrl = env('PATIENT_SERVICE_URL', 'http://192.168.0.100:8000');
         $this->httpClient = new Client([
             'timeout' => 2.0,
@@ -36,8 +37,9 @@ class ApiGatewayController extends Controller
     {
         try {
             $response = $this->httpClient->post("{$this->slotsServiceUrl}/api/v1/add-slots", [
-                'json' => $request->all()
+                'json' => $request->all(),
             ]);
+
             return response()->json(json_decode($response->getBody(), true), $response->getStatusCode());
         } catch (\Exception $e) {
 
@@ -50,7 +52,7 @@ class ApiGatewayController extends Controller
         try {
 
             $validator = Validator::make(['doctor_id' => $doctor_id], [
-                'doctor_id' => 'required|integer|min:1'
+                'doctor_id' => 'required|integer|min:1',
             ]);
 
             if ($validator->fails()) {
@@ -58,9 +60,9 @@ class ApiGatewayController extends Controller
                     'errors' => [[
                         'code' => self::ERROR_CODES['VALIDATION_FAILED'],
                         'message' => 'Validation failed',
-                        'meta' => $validator->errors()->toArray()
+                        'meta' => $validator->errors()->toArray(),
                     ]],
-                    'data' => null
+                    'data' => null,
                 ], 400);
             }
 
@@ -76,8 +78,9 @@ class ApiGatewayController extends Controller
     {
         try {
             $response = $this->httpClient->post("{$this->slotsServiceUrl}/api/v1/book-appointments", [
-                'json' => $request->all()
+                'json' => $request->all(),
             ]);
+
             return response()->json(json_decode($response->getBody(), true), $response->getStatusCode());
         } catch (\Exception $e) {
 
@@ -91,6 +94,7 @@ class ApiGatewayController extends Controller
     {
         try {
             $response = $this->httpClient->get("{$this->patientsServiceUrl}/api/v1/patients/{$id}");
+
             return response()->json(json_decode($response->getBody(), true), $response->getStatusCode());
         } catch (\Exception $e) {
 
@@ -102,7 +106,7 @@ class ApiGatewayController extends Controller
     {
         try {
             $response = $this->httpClient->get("{$this->patientsServiceUrl}/api/v1/search-patients", [
-                'query' => $request->query()
+                'query' => $request->query(),
             ]);
 
             return response()->json(json_decode($response->getBody(), true), $response->getStatusCode());
@@ -116,8 +120,9 @@ class ApiGatewayController extends Controller
     {
         try {
             $response = $this->httpClient->post("{$this->patientsServiceUrl}/api/v1/add-patients", [
-                'json' => $request->all()
+                'json' => $request->all(),
             ]);
+
             return response()->json(json_decode($response->getBody(), true), $response->getStatusCode());
         } catch (\Exception $e) {
 
@@ -129,8 +134,9 @@ class ApiGatewayController extends Controller
     {
         try {
             $response = $this->httpClient->post("{$this->patientsServiceUrl} /api/v1/patients/add-medical-history/{$patientId}", [
-                'json' => $request->all()
+                'json' => $request->all(),
             ]);
+
             return response()->json(json_decode($response->getBody(), true), $response->getStatusCode());
         } catch (\Exception $e) {
 
@@ -147,7 +153,7 @@ class ApiGatewayController extends Controller
 
         return response()->json([
             'error' => 'Service unavailable',
-            'message' => $e->getMessage()
+            'message' => $e->getMessage(),
         ], $statusCode);
     }
 }
