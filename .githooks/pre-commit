@@ -1,0 +1,20 @@
+#!/bin/sh
+
+echo "Running PHP-CS-Fixer..."
+./vendor/bin/pint --verbose
+PHP_CS_FIXER_EXIT_CODE=$?
+
+echo "Running PHPStan..."
+./vendor/bin/phpstan analyse --no-progress --memory-limit 512M
+PHPSTAN_EXIT_CODE=$?
+
+echo "Running PHPUnit tests..."
+php artisan test
+PHPUNIT_EXIT_CODE=$?
+
+if [ $PHP_CS_FIXER_EXIT_CODE -ne 0 ] || [ $PHPSTAN_EXIT_CODE -ne 0 ] || [ $PHPUNIT_EXIT_CODE -ne 0 ]; then
+  echo "PHP-CS-Fixer, PHPStan or tests failed, commit aborted!"
+  exit 1
+fi
+
+exit 0

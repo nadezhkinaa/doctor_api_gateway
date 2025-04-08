@@ -7,17 +7,19 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Http\Request as HttpRequest;
-use Illuminate\Support\Facades\Validator;
 use Tests\TestCase;
 
 class ApiGatewayControllerTest extends TestCase
 {
     private $slotsServiceUrl = 'http://slots-service.test';
+
     private $patientsServiceUrl = 'http://patients-service.test';
+
     private $controller;
+
     private $mockHandler;
 
     protected function setUp(): void
@@ -34,12 +36,12 @@ class ApiGatewayControllerTest extends TestCase
         });
 
         // Create a mock handler for Guzzle client
-        $this->mockHandler = new MockHandler();
+        $this->mockHandler = new MockHandler;
         $handlerStack = HandlerStack::create($this->mockHandler);
         $client = new Client(['handler' => $handlerStack]);
 
         // Create controller instance with mocked client
-        $this->controller = new ApiGatewayController();
+        $this->controller = new ApiGatewayController;
         $this->setProtectedProperty($this->controller, 'httpClient', $client);
         $this->setProtectedProperty($this->controller, 'slotsServiceUrl', $this->slotsServiceUrl);
         $this->setProtectedProperty($this->controller, 'patientsServiceUrl', $this->patientsServiceUrl);
@@ -61,7 +63,7 @@ class ApiGatewayControllerTest extends TestCase
         $request = new HttpRequest([], [], [], [], [], [], json_encode([
             'doctor_id' => 1,
             'start_time' => '2023-01-01 10:00:00',
-            'end_time' => '2023-01-01 11:00:00'
+            'end_time' => '2023-01-01 11:00:00',
         ]));
 
         $response = $this->controller->addSlot($request);
@@ -99,7 +101,7 @@ class ApiGatewayControllerTest extends TestCase
         $request = new HttpRequest([], [], [], [], [], [], json_encode([
             'slot_id' => 1,
             'patient_id' => 1,
-            'notes' => 'Test appointment'
+            'notes' => 'Test appointment',
         ]));
 
         $response = $this->controller->bookAppointment($request);
@@ -136,7 +138,7 @@ class ApiGatewayControllerTest extends TestCase
 
         $request = new HttpRequest([], [], [], [], [], [], json_encode([
             'name' => 'New Patient',
-            'email' => 'patient@example.com'
+            'email' => 'patient@example.com',
         ]));
 
         $response = $this->controller->addPatient($request);
@@ -152,7 +154,7 @@ class ApiGatewayControllerTest extends TestCase
 
         $request = new HttpRequest([], [], [], [], [], [], json_encode([
             'medical_history' => 'Some history',
-            'allergies' => 'None'
+            'allergies' => 'None',
         ]));
 
         $response = $this->controller->addPatientData($request, $patientId);
@@ -168,7 +170,7 @@ class ApiGatewayControllerTest extends TestCase
             new Response(503)
         ));
 
-        $request = new HttpRequest();
+        $request = new HttpRequest;
         $response = $this->controller->addSlot($request);
         $this->assertEquals(503, $response->getStatusCode());
         $this->assertEquals([
@@ -181,7 +183,7 @@ class ApiGatewayControllerTest extends TestCase
     {
         $this->mockHandler->append(new \Exception('Generic error'));
 
-        $request = new HttpRequest();
+        $request = new HttpRequest;
         $response = $this->controller->addSlot($request);
         $this->assertEquals(500, $response->getStatusCode());
         $this->assertEquals([

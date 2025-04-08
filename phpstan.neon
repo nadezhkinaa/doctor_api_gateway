@@ -32,7 +32,7 @@ parameters:
         - ./storage/
         - ./bootstrap/cache/
         - ./vendor/
-        - ./node_modules/
+        - ./node_modules/ (?)
         - ./tests/Unit/ExampleTest.php
 
     inferPrivatePropertyTypeFromConstructor: true

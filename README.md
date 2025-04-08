@@ -14,6 +14,7 @@ RESTful API для управления маршрутизацией запро�
 ```bash
 git clone https://github.com/nadezhkinaa/doctor_api_gateway.git
 cd doctor_api_gateway
+git config core.hooksPath .githooks/
 composer install
 cp .env.example .env
 php artisan key:generate
