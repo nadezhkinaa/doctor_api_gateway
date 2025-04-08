@@ -1,66 +1,218 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# API_GATEWAY для медицинской системы
 
-## About Laravel
+## Описание проекта
+RESTful API для управления маршрутизацией запросов
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Требования
+- PHP 8.4.1
+- Composer 2.8.3
+- SQLite 2.6.0
+- Laravel 12.1.1
+  
+## Установка
+```bash
+git clone https://github.com/nadezhkinaa/doctor_api_gateway.git
+cd doctor_api_gateway
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan serve
+```
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+# API Endpoints
+## 1. Создание слотов
+```POST /api/v1/slots/add```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Тело:
 
-## Learning Laravel
+```json
+{
+    "doctor_id": 3,
+    "start_time": "2023-11-22 19:00:00",
+    "end_time": "2023-11-22 19:20:00"
+}
+```
+Ответ:
+```json
+{
+    "errors": [],
+    "data": {
+        "doctor_id": 3,
+        "start_time": "2024-11-22 19:00:00",
+        "end_time": "2024-11-22 19:20:00",
+        "is_available": true,
+        "updated_at": "2025-04-08T18:13:45.000000Z",
+        "created_at": "2025-04-08T18:13:45.000000Z",
+        "id": 16
+    }
+}
+```
+## 2. Получить информацию о пациенте по ID
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```GET /api/v1/slots/free/{id}```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Пример:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```GET /api/v1/slots/free/3```
 
-## Laravel Sponsors
+Ответ:
+```json
+{
+    "errors": [],
+    "data": [
+        {
+            "id": 15,
+            "doctor_id": 3,
+            "start_time": "2023-11-22 19:00:00",
+            "end_time": "2023-11-22 19:20:00",
+            "is_available": 1,
+            "created_at": "2025-04-07T16:19:30.000000Z",
+            "updated_at": "2025-04-07T16:19:30.000000Z"
+        },
+        {
+            "id": 16,
+            "doctor_id": 3,
+            "start_time": "2024-11-22 19:00:00",
+            "end_time": "2024-11-22 19:20:00",
+            "is_available": 1,
+            "created_at": "2025-04-08T18:13:45.000000Z",
+            "updated_at": "2025-04-08T18:13:45.000000Z"
+        }
+    ]
+}
+```
+## 3. Запись на прием
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```POST /api/v1/appointments/book```
 
-### Premium Partners
+Тело:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+```json
+{
+    "schedule_id":15,
+    "patient_id": "2"
+}
+```
 
-## Contributing
+Ответ:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```json
+{
+    "message": "Appointment booked successfully",
+    "data": {
+        "schedule_id": 15,
+        "patient_id": "2",
+        "updated_at": "2025-04-08T18:18:35.000000Z",
+        "created_at": "2025-04-08T18:18:35.000000Z",
+        "id": 8
+    }
+}
+```
+## 4. Создать пациента
+```POST /api/v1/add-patients```
 
-## Code of Conduct
+Тело:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```json
+{
+    "first_name": "Antonio",
+    "last_name": "Banderas",
+    "age": 64
+}
+```
+Ответ:
+```json
+{
+    "data": {
+        "first_name": "Antonio",
+        "last_name": "Banderas",
+        "middle_name": null,
+        "age": 64,
+        "medical_history": null,
+        "updated_at": "2025-04-07T13:41:57.000000Z",
+        "created_at": "2025-04-07T13:41:57.000000Z",
+        "id": 13
+    }
+}
+```
+## 5. Получить информацию о пациенте по ID
 
-## Security Vulnerabilities
+```GET /api/v1/get-patients/{id}```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Пример:
 
-## License
+```GET /api/v1/get-patient/13```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Ответ:
+```json
+{
+    "data": {
+        "id": 13,
+        "first_name": "Antonio",
+        "last_name": "Banderas",
+        "middle_name": null,
+        "age": 64,
+        "medical_history": null,
+        "created_at": "2025-04-07T13:41:57.000000Z",
+        "updated_at": "2025-04-07T13:41:57.000000Z"
+    }
+}
+```
+## 6. Поиск пациентов
+
+```GET /api/v1/find-patients?```
+
+Пример:
+
+```GET /api/v1/find-patients?first_name=Antonio&age=64```
+
+Ответ:
+
+```json
+{
+    "data": [
+        {
+            "id": 13,
+            "first_name": "Antonio",
+            "last_name": "Banderas",
+            "middle_name": null,
+            "age": 64,
+            "medical_history": null,
+            "created_at": "2025-04-07T13:41:57.000000Z",
+            "updated_at": "2025-04-07T13:41:57.000000Z"
+        }
+    ]
+}
+```
+## 7. Добавить медзапись
+
+```POST /api/v1/patients/{patientId}/add-data```
+
+Пример:
+
+```POST /api/v1/patients/13/add-data```
+
+Тело:
+
+```json
+{"medical_history": "Small cough."}
+```
+Ответ:
+
+```json
+{
+    "data": {
+        "id": 13,
+        "first_name": "Antonio",
+        "last_name": "Banderas",
+        "middle_name": null,
+        "age": 64,
+        "medical_history": "\nSmall cough.",
+        "created_at": "2025-04-07T13:41:57.000000Z",
+        "updated_at": "2025-04-07T13:44:27.000000Z"
+    }
+}
+
+```
