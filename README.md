@@ -189,11 +189,11 @@ php artisan serve
 ```
 ## 7. Добавить медзапись
 
-```POST /api/v1/patients/{patientId}/add-data```
+```POST /api/v1/patients/add-data/{id}```
 
 Пример:
 
-```POST /api/v1/patients/13/add-data```
+```POST /api/v1/patients/add-data/13```
 
 Тело:
 

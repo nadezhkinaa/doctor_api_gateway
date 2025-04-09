@@ -147,13 +147,24 @@ class ApiGatewayController extends Controller
     private function handleException(\Exception $e)
     {
         $statusCode = 500;
+        $message = $e->getMessage();
+
         if ($e instanceof \GuzzleHttp\Exception\ClientException) {
             $statusCode = $e->getResponse()->getStatusCode();
+
+            try {
+                $responseBody = json_decode($e->getResponse()->getBody()->getContents(), true);
+                if (isset($responseBody['errors']) && is_array($responseBody['errors']) && !empty($responseBody['errors'])) {
+                    $message = $responseBody['errors'][0]['message'] ?? $message;
+                }
+            } catch (\Exception $jsonException) {
+                // В случае ошибки парсинга JSON
+            }
         }
 
         return response()->json([
             'error' => 'Service unavailable',
-            'message' => $e->getMessage(),
+            'message' => $message,
         ], $statusCode);
     }
 }

@@ -10,4 +10,4 @@ Route::post('/v1/appointments/book', [ApiGatewayController::class, 'bookAppointm
 Route::get('/v1/get-patients/{id}', [ApiGatewayController::class, 'getPatient']);
 Route::get('/v1/find-patients', [ApiGatewayController::class, 'findPatients']);
 Route::post('/v1/add-patients', [ApiGatewayController::class, 'addPatient']);
-Route::post('/v1/patients/{patientId}/add-data', [ApiGatewayController::class, 'addPatientData']);
+Route::post('/v1/patients/add-data/{id}', [ApiGatewayController::class, 'addPatientData']);
