@@ -133,7 +133,7 @@ class ApiGatewayController extends Controller
     public function addPatientData(Request $request, $patientId)
     {
         try {
-            $response = $this->httpClient->post("{$this->patientsServiceUrl} /api/v1/patients/add-medical-history/{$patientId}", [
+            $response = $this->httpClient->post("{$this->patientsServiceUrl}/api/v1/patients/add-medical-history/{$patientId}", [
                 'json' => $request->all(),
             ]);
 
